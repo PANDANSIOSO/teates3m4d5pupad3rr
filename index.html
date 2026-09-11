@@ -3,6 +3,672 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panda Creator Hub | Gerenciador com Anúncios</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #0b0f19;
+            color: #ffffff;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 850px;
+            background: #111827;
+            border: 2px solid #39ff14;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 0 20px rgba(57, 255, 20, 0.1);
+        }
+
+        h2 {
+            color: #39ff14;
+            text-align: center;
+            margin-bottom: 25px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn {
+            padding: 12px 18px;
+            border: none;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: bold;
+            cursor: pointer;
+            text-transform: uppercase;
+            transition: 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-success { background: #39ff14; color: #000; }
+        .btn-success:hover { background: #2ee60f; box-shadow: 0 0 15px rgba(57, 255, 20, 0.4); }
+        .btn-primary { background: #0077ff; color: #fff; }
+        .btn-primary:hover { background: #005ecb; box-shadow: 0 0 15px rgba(0, 119, 255, 0.4); }
+        .btn-secondary { background: #374151; color: #fff; }
+        .btn-secondary:hover { background: #4b5563; }
+        .btn-warning { background: #f59e0b; color: #000; }
+        .btn-warning:hover { background: #d97706; }
+        .btn-danger { background: #ef4444; color: #fff; padding: 8px 12px; font-size: 12px; }
+        .btn-danger:hover { background: #dc2626; }
+
+        .header-lista {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 15px;
+        }
+
+        .lista-paginas {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .item-pagina {
+            background: #1f2937;
+            border-left: 5px solid #39ff14;
+            padding: 18px;
+            border-radius: 0 10px 10px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .item-info { flex: 1; min-width: 250px; }
+        .item-info h3 { font-size: 18px; color: #39ff14; margin-bottom: 6px; font-weight: 700; }
+        .item-info p { font-size: 13px; color: #9ca3af; margin-bottom: 4px; }
+
+        .item-acoes { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+
+        .form-group { margin-bottom: 20px; }
+        label { display: block; font-weight: bold; margin-bottom: 8px; color: #9ca3af; }
+        input[type="text"] {
+            width: 100%; padding: 12px; background: #1f2937; border: 1px solid #4b5563; border-radius: 8px; color: #fff; font-size: 14px;
+        }
+        input[type="text"]:focus { border-color: #39ff14; outline: none; }
+
+        .checkbox-group {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+        }
+        .item-anuncio-config {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        .item-anuncio-config label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            margin: 0;
+            color: #fff;
+        }
+        .item-anuncio-config input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+        .item-anuncio-config input[type="text"] {
+            font-size: 12px;
+            padding: 8px 12px;
+            background: #111827;
+        }
+
+        .bloco-dinamico {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px dashed #4b5563;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+        }
+
+        .linha-input {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+            align-items: center;
+        }
+        .linha-input input { flex: 1; }
+
+        .tela { display: none; }
+        .tela-ativa { display: block; }
+
+        textarea.codigo-gerado {
+            width: 100%; height: 300px; font-family: 'Courier New', monospace; font-size: 12px;
+            background: #000; border-color: #0077ff; color: #fff; border-radius: 8px; padding: 10px; margin-top: 15px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>Panda Creator Hub 🐼</h2>
+
+        <div id="telaLista" class="tela tela-ativa">
+            <div class="header-lista">
+                <span style="color: #9ca3af; font-size: 14px; font-weight: bold;">Suas Configurações Salvas:</span>
+                <button class="btn btn-success" onclick="abrirParaCriar()">➕ Criar Nova Página</button>
+            </div>
+            <div id="listaContainer" class="lista-paginas"></div>
+        </div>
+
+        <div id="telaForm" class="tela">
+            <h3 id="tituloForm" style="color: #39ff14; margin-bottom: 20px; text-transform: uppercase; font-size: 16px;">Criar Nova Configuração</h3>
+            
+            <div class="form-group">
+                <label>Nome / Identificação da Página:</label>
+                <input type="text" id="nomePagina" placeholder="Ex: Arquivos de Download Vídeo X">
+            </div>
+
+            <div class="checkbox-group">
+                <div class="item-anuncio-config">
+                    <label>
+                        <input type="checkbox" id="habilitarPopunder"> 📢 Ativar Popunder
+                    </label>
+                    <input type="text" id="codePopunder" placeholder="Código personalizado (Deixe vazio para usar o padrão)">
+                </div>
+                <div class="item-anuncio-config">
+                    <label>
+                        <input type="checkbox" id="habilitarBanner728x90"> 📢 Ativar Banner 728x90 (Topo)
+                    </label>
+                    <input type="text" id="codeBanner728x90" placeholder="Código personalizado (Deixe vazio para usar o padrão)">
+                </div>
+                <div class="item-anuncio-config">
+                    <label>
+                        <input type="checkbox" id="habilitarBanner300x250"> 📢 Ativar Banner 300x250 (Rodapé)
+                    </label>
+                    <input type="text" id="codeBanner300x250" placeholder="Código personalizado (Deixe vazio para usar o padrão)">
+                </div>
+                <div class="item-anuncio-config">
+                    <label>
+                        <input type="checkbox" id="habilitarBanner320x50"> 📢 Ativar Banner 320x50 (Entre vídeo e botões)
+                    </label>
+                    <input type="text" id="codeBanner320x50" placeholder="Código personalizado (Deixe vazio para usar o padrão)">
+                </div>
+                <div class="item-anuncio-config">
+                    <label>
+                        <input type="checkbox" id="habilitarBandeira"> 📢 Ativar Bandeira
+                    </label>
+                    <input type="text" id="codeBandeira" placeholder="Código personalizado (Deixe vazio para usar o padrão)">
+                </div>
+                <div class="item-anuncio-config">
+                    <label>
+                        <input type="checkbox" id="habilitarSocialBar"> 📢 Ativar Social Bar
+                    </label>
+                    <input type="text" id="codeSocialBar" placeholder="Código personalizado (Deixe vazio para usar o padrão)">
+                </div>
+            </div>
+
+            <div class="bloco-dinamico">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                    <label style="margin: 0; color: #fff;">📥 Arquivos de Download (Cada um terá seu botão independente):</label>
+                    <button class="btn btn-success" style="padding: 6px 12px; font-size: 12px;" onclick="adicionarCampoArquivo()">＋ Adicionar Arquivo</button>
+                </div>
+                <div id="containerArquivos"></div>
+            </div>
+
+            <div class="bloco-dinamico">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                    <label style="margin: 0;">🛍️ Links Ocultos de Produtos Shopee (Vazio usa a lista padrão):</label>
+                    <button class="btn btn-success" style="padding: 6px 12px; font-size: 12px;" onclick="adicionarCampoSimples('containerProdutos', 'Link do Produto Shopee')">＋ Adicionar Produto</button>
+                </div>
+                <div id="containerProdutos"></div>
+            </div>
+
+            <div class="bloco-dinamico">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                    <label style="margin: 0;">📺 Links dos Vídeos do YouTube (Vazio usa a rotação padrão):</label>
+                    <button class="btn btn-primary" style="padding: 6px 12px; font-size: 12px;" onclick="adicionarCampoSimples('containerVideos', 'Link do vídeo ou ID')">＋ Adicionar Vídeo</button>
+                </div>
+                <div id="containerVideos"></div>
+            </div>
+
+            <div class="bloco-dinamico">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                    <label style="margin: 0; color: #fff;">🎬 Vídeos Sugeridos (Abaixo do player - Deixe vazio para usar o padrão):</label>
+                    <button class="btn btn-success" style="padding: 6px 12px; font-size: 12px;" onclick="adicionarCampoSugestao()">＋ Adicionar Sugestão</button>
+                </div>
+                <div id="containerSugestoes"></div>
+            </div>
+
+            <div style="display: flex; gap: 15px; margin-top: 25px;">
+                <button class="btn btn-secondary" style="flex: 1;" onclick="mudarTela('telaLista')">Cancelar</button>
+                <button class="btn btn-success" style="flex: 2;" onclick="processarFormulario()">⚡ Gerar e Salvar Código</button>
+            </div>
+        </div>
+
+        <div id="telaResultado" class="tela">
+            <h3 style="color: #0077ff; margin-bottom: 10px;">⚡ Código HTML Pronto!</h3>
+            <p style="font-size: 13px; color: #9ca3af; margin-bottom: 15px;">Copie o código abaixo e publique no seu GitHub Pages.</p>
+            
+            <textarea id="txtCodigoPronto" class="codigo-gerado" readonly></textarea>
+            
+            <div style="display: flex; gap: 15px; margin-top: 20px;">
+                <button class="btn btn-secondary" style="flex: 1;" onclick="mudarTela('telaLista')">Voltar para a Lista</button>
+                <button class="btn btn-success" style="flex: 1.5;" onclick="visualizarCodigoEmTempoReal()">👁️ Visualizar Página</button>
+                <button class="btn btn-primary" style="flex: 1.5;" onclick="copyCode()">📋 Copiar Código HTML</button>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        const videosPadraoDoCanal = [
+            "QXJPVtfV8S8", "KGxZK9I79RQ", "jKoM0eKkJCo", "TjYQ1iUuMlA",
+            "MWQ3iiY-qvI", "_E906DAWdpw", "JWRFqQPIydw", "2588HbuLrtA"
+        ];
+
+        const produtosPadraoDoCanal = [
+            "https://s.shopee.com.br/1gGAQYhaiv", "https://s.shopee.com.br/2qS7oj7XmR",
+            "https://s.shopee.com.br/6VLQBUFJj5", "https://s.shopee.com.br/3LOOPgZUce",
+            "https://s.shopee.com.br/40e5CvfcpC", "https://s.shopee.com.br/60P9acpCqm",
+            "https://s.shopee.com.br/3LOOPkKx93", "https://s.shopee.com.br/902lACp5sm"
+        ];
+
+        const sugestoesPadraoDoCanal = [
+            { titulo: "Como desbloquear o bootloader do Celular Samsung", id: "giJXYqCZShU" },
+            { titulo: "Como instalar o Twrp eo Vb meta sem pc - Eros Flash toot", id: "JlKrPbHpijU" },
+            { titulo: "Como instalar custo rom com Adb Sideload", id: "d9p7SAnpakU" },
+            { titulo: "Como instalar Stock em qualquer Samsung", id: "ZsF7gaMhMvw" },
+            { titulo: "Como instalar a Stock rom sem Computador", id: "GlNHDZpT5UU" },
+            { titulo: "Como instalar a rom un1ca 3.0.6", id: "jKoM0eKkJCo" },
+            { titulo: "Como instalar a Clean UI 7 no S20fe", id: "TjYQ1iUuMlA" },
+            { titulo: "Como instalar a Polsar OS One Ui 5.1 no S20fe", id: "2588HbuLrtA" },
+            { titulo: "Super Wallpaper animado xiaomi na tela Aod Samsung - root", id: "_E906DAWdpw" },
+            { titulo: "Swifyt Blackup - Restauração de Whatsapp", id: "jdjfZh-ZXq8" }
+        ];
+
+        let historicoPaginas = JSON.parse(localStorage.getItem('panda_paginas')) || [];
+        let indexSendoEditado = -1;
+
+        function mudarTela(idTela) {
+            document.querySelectorAll('.tela').forEach(t => t.style.display = 'none');
+            document.getElementById(idTela).style.display = 'block';
+            if(idTela === 'telaLista') renderizarLista();
+        }
+
+        function abrirParaCriar() {
+            indexSendoEditado = -1;
+            document.getElementById('tituloForm').innerText = "Criar Nova Configuração";
+            limparFormulario();
+            adicionarCampoArquivo();
+            
+            // Resetar checkboxes e inputs de anúncios
+            document.getElementById('habilitarPopunder').checked = false;
+            document.getElementById('codePopunder').value = '';
+            document.getElementById('habilitarBanner728x90').checked = false;
+            document.getElementById('codeBanner728x90').value = '';
+            document.getElementById('habilitarBanner300x250').checked = false;
+            document.getElementById('codeBanner300x250').value = '';
+            document.getElementById('habilitarBanner320x50').checked = false;
+            document.getElementById('codeBanner320x50').value = '';
+            document.getElementById('habilitarBandeira').checked = false;
+            document.getElementById('codeBandeira').value = '';
+            document.getElementById('habilitarSocialBar').checked = false;
+            document.getElementById('codeSocialBar').value = '';
+
+            mudarTela('telaForm');
+        }
+
+        function adicionarCampoSimples(idContainer, placeholder, valor = "") {
+            const container = document.getElementById(idContainer);
+            const div = document.createElement('div');
+            div.className = 'linha-input';
+            div.innerHTML = `
+                <input type="text" class="input-dinamico" placeholder="${placeholder}" value="${valor}">
+                <button class="btn btn-danger" onclick="this.parentElement.remove()">X</button>
+            `;
+            container.appendChild(div);
+        }
+
+        function adicionarCampoArquivo(nome = "", link = "") {
+            const container = document.getElementById('containerArquivos');
+            const div = document.createElement('div');
+            div.className = 'bloco-dinamico linha-input-arquivo';
+            div.style.display = "flex";
+            div.style.gap = "10px";
+            div.style.marginBottom = "10px";
+            div.style.padding = "10px";
+            div.style.background = "rgba(255,255,255,0.05)";
+            
+            div.innerHTML = `
+                <div style="flex: 1; display: flex; flex-direction: column; gap: 5px;">
+                    <input type="text" class="input-arq-nome" placeholder="Nome do Arquivo (Ex: ROM Global V14)" value="${nome}">
+                    <input type="text" class="input-arq-link" placeholder="Link de Download (Mega, Gofile...)" value="${link}">
+                </div>
+                <button class="btn btn-danger" style="height: fit-content; align-self: center;" onclick="this.parentElement.remove()">X</button>
+            `;
+            container.appendChild(div);
+        }
+
+        function adicionarCampoSugestao(titulo = "", link = "") {
+            const container = document.getElementById('containerSugestoes');
+            const div = document.createElement('div');
+            div.className = 'bloco-dinamico linha-input-sugestao';
+            div.style.display = "flex";
+            div.style.gap = "10px";
+            div.style.marginBottom = "10px";
+            div.style.padding = "10px";
+            div.style.background = "rgba(255,255,255,0.05)";
+            
+            div.innerHTML = `
+                <div style="flex: 1; display: flex; flex-direction: column; gap: 5px;">
+                    <input type="text" class="input-sug-titulo" placeholder="Título do Vídeo Sugerido" value="${titulo}">
+                    <input type="text" class="input-sug-link" placeholder="Link ou ID do YouTube" value="${link}">
+                </div>
+                <button class="btn btn-danger" style="height: fit-content; align-self: center;" onclick="this.parentElement.remove()">X</button>
+            `;
+            container.appendChild(div);
+        }
+
+        function limparFormulario() {
+            document.getElementById('nomePagina').value = "";
+            document.getElementById('containerArquivos').innerHTML = "";
+            document.getElementById('containerProdutos').innerHTML = "";
+            document.getElementById('containerVideos').innerHTML = "";
+            document.getElementById('containerSugestoes').innerHTML = "";
+        }
+
+        function renderizarLista() {
+            const container = document.getElementById('listaContainer');
+            if(historicoPaginas.length === 0) {
+                container.innerHTML = `<p style="text-align:center; color:#6b7280; padding:20px;">Nenhuma configuração salva ainda.</p>`;
+                return;
+            }
+
+            container.innerHTML = "";
+            historicoPaginas.forEach((pag, index) => {
+                const qtdArquivos = pag.arquivos ? pag.arquivos.length : 0;
+                const div = document.createElement('div');
+                div.className = 'item-pagina';
+                div.innerHTML = `
+                    <div class="item-info">
+                        <h3>${pag.nome}</h3>
+                        <p>Botões de Arquivos: <strong>${qtdArquivos}</strong></p>
+                    </div>
+                    <div class="item-acoes">
+                        <button class="btn btn-warning" onclick="abrirParaEditar(${index})">✏️ Editar</button>
+                        <button class="btn btn-primary" onclick="verCodigoSalvo(${index})">💻 Ver Código HTML</button>
+                        <button class="btn btn-danger" onclick="deletarPagina(${index})">🗑️</button>
+                    </div>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        function abrirParaEditar(index) {
+            indexSendoEditado = index;
+            const pag = historicoPaginas[index];
+            document.getElementById('tituloForm').innerText = "Editando: " + pag.nome;
+            document.getElementById('nomePagina').value = pag.nome;
+            
+            // Carregar configurações dos anúncios
+            document.getElementById('habilitarPopunder').checked = pag.ads?.popunder || false;
+            document.getElementById('codePopunder').value = pag.ads?.codePopunder || '';
+
+            document.getElementById('habilitarBanner728x90').checked = pag.ads?.banner728x90 || false;
+            document.getElementById('codeBanner728x90').value = pag.ads?.codeBanner728x90 || '';
+
+            document.getElementById('habilitarBanner300x250').checked = pag.ads?.banner300x250 || false;
+            document.getElementById('codeBanner300x250').value = pag.ads?.codeBanner300x250 || '';
+
+            document.getElementById('habilitarBanner320x50').checked = pag.ads?.banner320x50 || false;
+            document.getElementById('codeBanner320x50').value = pag.ads?.codeBanner320x50 || '';
+
+            document.getElementById('habilitarBandeira').checked = pag.ads?.bandeira || false;
+            document.getElementById('codeBandeira').value = pag.ads?.codeBandeira || '';
+
+            document.getElementById('habilitarSocialBar').checked = pag.ads?.socialBar || false;
+            document.getElementById('codeSocialBar').value = pag.ads?.codeSocialBar || '';
+
+            document.getElementById('containerArquivos').innerHTML = "";
+            if (pag.arquivos && pag.arquivos.length > 0) {
+                pag.arquivos.forEach(arq => adicionarCampoArquivo(arq.nome, arq.link));
+            }
+
+            document.getElementById('containerProdutos').innerHTML = "";
+            if (pag.produtos && pag.produtos.length > 0) {
+                pag.produtos.forEach(p => adicionarCampoSimples('containerProdutos', 'Link do Produto Shopee', p));
+            }
+
+            document.getElementById('containerVideos').innerHTML = "";
+            if (pag.videos && pag.videos.length > 0) {
+                pag.videos.forEach(v => adicionarCampoSimples('containerVideos', 'Link do vídeo ou ID', v));
+            }
+
+            document.getElementById('containerSugestoes').innerHTML = "";
+            if (pag.sugestoes && pag.sugestoes.length > 0) {
+                pag.sugestoes.forEach(s => adicionarCampoSugestao(s.titulo, s.id));
+            }
+            mudarTela('telaForm');
+        }
+
+        function deletarPagina(index) {
+            if(confirm("Deseja apagar essa configuração?")) {
+                historicoPaginas.splice(index, 1);
+                localStorage.setItem('panda_paginas', JSON.stringify(historicoPaginas));
+                renderizarLista();
+            }
+        }
+
+        function verCodigoSalvo(index) {
+            const pag = historicoPaginas[index];
+            const vds = pag.videos.length > 0 ? pag.videos : videosPadraoDoCanal;
+            const pdts = pag.produtos && pag.produtos.length > 0 ? pag.produtos : produtosPadraoDoCanal;
+            const sugs = pag.sugestoes && pag.sugestoes.length > 0 ? pag.sugestoes : sugestoesPadraoDoCanal;
+            const codigoHTML = montarTemplateHTML(pag.arquivos, pdts, vds, sugs, pag.ads || {});
+            document.getElementById('txtCodigoPronto').value = codigoHTML;
+            mudarTela('telaResultado');
+        }
+
+        function processarFormulario() {
+            const nome = document.getElementById('nomePagina').value.trim() || "Página Sem Nome";
+            
+            // Pegar configurações dos anúncios
+            const adsConfig = {
+                popunder: document.getElementById('habilitarPopunder').checked,
+                codePopunder: document.getElementById('codePopunder').value.trim(),
+                banner728x90: document.getElementById('habilitarBanner728x90').checked,
+                codeBanner728x90: document.getElementById('codeBanner728x90').value.trim(),
+                banner300x250: document.getElementById('habilitarBanner300x250').checked,
+                codeBanner300x250: document.getElementById('codeBanner300x250').value.trim(),
+                banner320x50: document.getElementById('habilitarBanner320x50').checked,
+                codeBanner320x50: document.getElementById('codeBanner320x50').value.trim(),
+                bandeira: document.getElementById('habilitarBandeira').checked,
+                codeBandeira: document.getElementById('codeBandeira').value.trim(),
+                socialBar: document.getElementById('habilitarSocialBar').checked,
+                codeSocialBar: document.getElementById('codeSocialBar').value.trim()
+            };
+            
+            const blocosArquivos = document.querySelectorAll('#containerArquivos .bloco-dinamico');
+            const arquivos = [];
+            blocosArquivos.forEach(bloco => {
+                const n = bloco.querySelector('.input-arq-nome').value.trim();
+                const l = bloco.querySelector('.input-arq-link').value.trim();
+                if(l) {
+                    arquivos.push({ nome: n || "Arquivo sem Nome", link: l });
+                }
+            });
+
+            const inputsProdutos = document.querySelectorAll('#containerProdutos .input-dinamico');
+            const produtos = Array.from(inputsProdutos).map(i => i.value.trim()).filter(p => p.length > 0);
+
+            const inputsVideos = document.querySelectorAll('#containerVideos .input-dinamico');
+            const videos = Array.from(inputsVideos).map(i => extrairIdYoutube(i.value)).filter(v => v.length > 0);
+
+            const blocosSugestoes = document.querySelectorAll('#containerSugestoes .bloco-dinamico');
+            const sugestoes = [];
+            blocosSugestoes.forEach(bloco => {
+                const t = bloco.querySelector('.input-sug-titulo').value.trim();
+                const l = bloco.querySelector('.input-sug-link').value.trim();
+                if(l) {
+                    sugestoes.push({ titulo: t || "Vídeo Sugerido", id: extrairIdYoutube(l) });
+                }
+            });
+
+            if(arquivos.length === 0) {
+                alert("Por favor, adicione pelo menos um arquivo!");
+                return;
+            }
+
+            const dadosPagina = { nome, arquivos, produtos, videos, sugestoes, ads: adsConfig, data: new Date().toLocaleDateString('pt-BR') };
+
+            if (indexSendoEditado === -1) historicoPaginas.unshift(dadosPagina);
+            else historicoPaginas[indexSendoEditado] = dadosPagina;
+
+            localStorage.setItem('panda_paginas', JSON.stringify(historicoPaginas));
+
+            const vdsFinais = videos.length > 0 ? videos : videosPadraoDoCanal;
+            const pdtsFinais = produtos.length > 0 ? produtos : produtosPadraoDoCanal;
+            const sugsFinais = sugestoes.length > 0 ? sugestoes : sugestoesPadraoDoCanal;
+
+            const codigoHTML = montarTemplateHTML(arquivos, pdtsFinais, vdsFinais, sugsFinais, adsConfig);
+            document.getElementById('txtCodigoPronto').value = codigoHTML;
+            mudarTela('telaResultado');
+        }
+
+        function extrairIdYoutube(linkOuId) {
+            linkOuId = linkOuId.trim();
+            if (linkOuId.includes("youtu.be/")) return linkOuId.split("youtu.be/")[1].split("?")[0];
+            if (linkOuId.includes("v=")) return linkOuId.split("v=")[1].split("&")[0];
+            if (linkOuId.includes("embed/")) return linkOuId.split("embed/")[1].split("?")[0];
+            return linkOuId;
+        }
+
+        function montarTemplateHTML(listaArquivos, listaProdutos, listaVideos, listaSugestoes, adsConfig) {
+            const strArrayVideos = JSON.stringify(listaVideos, null, 12).replace(/\]/g, '            ]');
+            const strArrayProdutos = JSON.stringify(listaProdutos, null, 12).replace(/\]/g, '            ]');
+            const strArrayArquivos = JSON.stringify(listaArquivos, null, 12).replace(/\]/g, '            ]');
+            const strArraySugestoes = JSON.stringify(listaSugestoes, null, 12).replace(/\]/g, '            ]');
+
+            // Gerar os blocos de anúncios condicionalmente
+            let anunciosTopo = '';
+            let anuncioEntreVideo = '';
+            let anuncioRodape = '';
+            let scriptPopunder = '';
+            let scriptBandeira = '';
+            let scriptSocialBar = '';
+
+            if (adsConfig.banner728x90) {
+                if (adsConfig.codeBanner728x90) {
+                    anunciosTopo += `\n    <div class="ad-container ad-728x90">\n        ${adsConfig.codeBanner728x90}\n    </div>`;
+                } else {
+                    anunciosTopo += `
+    <div class="ad-container ad-728x90">
+        <script>
+            atOptions = {
+                'key' : '0090fc855bce8fb389926eabcc55ed1f',
+                'format' : 'iframe',
+                'height' : 90,
+                'width' : 728,
+                'params' : {}
+            };
+        <\/script>
+        <script src="https://www.highperformanceformat.com/0090fc855bce8fb389926eabcc55ed1f/invoke.js"><\/script>
+    </div>`;
+                }
+            }
+
+            if (adsConfig.banner300x250) {
+                if (adsConfig.codeBanner300x250) {
+                    anuncioRodape += `\n    <div class="ad-container ad-300x250">\n        ${adsConfig.codeBanner300x250}\n    </div>`;
+                } else {
+                    anuncioRodape += `
+    <div class="ad-container ad-300x250">
+        <script>
+            atOptions = {
+                'key' : '649e8619ac522c5b495c01e468041d0e',
+                'format' : 'iframe',
+                'height' : 250,
+                'width' : 300,
+                'params' : {}
+            };
+        <\/script>
+        <script src="https://www.highperformanceformat.com/649e8619ac522c5b495c01e468041d0e/invoke.js"><\/script>
+    </div>`;
+                }
+            }
+
+            if (adsConfig.banner320x50) {
+                if (adsConfig.codeBanner320x50) {
+                    anuncioEntreVideo += `\n    <div class="ad-container ad-320x50">\n        ${adsConfig.codeBanner320x50}\n    </div>`;
+                } else {
+                    anuncioEntreVideo += `
+    <div class="ad-container ad-320x50">
+        <script>
+            atOptions = {
+                'key' : '41eb470e322f84ddcbac2a56ee7c4ef5',
+                'format' : 'iframe',
+                'height' : 50,
+                'width' : 320,
+                'params' : {}
+            };
+        <\/script>
+        <script src="https://www.highperformanceformat.com/41eb470e322f84ddcbac2a56ee7c4ef5/invoke.js"><\/script>
+    </div>`;
+                }
+            }
+
+            if (adsConfig.popunder) {
+                if (adsConfig.codePopunder) {
+                    scriptPopunder = `\n    ${adsConfig.codePopunder}`;
+                } else {
+                    scriptPopunder = `
+    <script src="https://pl29725634.effectivecpmnetwork.com/6f/9b/2c/6f9b2c7ad1c7f92594d3d5e23ae29dd6.js"><\/script>`;
+                }
+            }
+
+            if (adsConfig.bandeira) {
+                if (adsConfig.codeBandeira) {
+                    scriptBandeira = `\n    ${adsConfig.codeBandeira}`;
+                } else {
+                    scriptBandeira = `
+    <script async="async" data-cfasync="false" src="https://pl29740469.effectivecpmnetwork.com/94f71d23e1cb7f5455caa2e345da6d0b/invoke.js"><\/script>
+    <div id="container-94f71d23e1cb7f5455caa2e345da6d0b"></div>`;
+                }
+            }
+
+            if (adsConfig.socialBar) {
+                if (adsConfig.codeSocialBar) {
+                    scriptSocialBar = `\n    ${adsConfig.codeSocialBar}`;
+                } else {
+                    scriptSocialBar = `
+    <script src="https://pl29725480.profitableratecpmnetwork.com/09/2f/ac/092facea61b744fe5140d48a0f6cb8e2.js"><\/script>`;
+                }
+            }
+
+            return `<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Canal Panda Ansioso | Downloads</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
@@ -128,19 +794,7 @@
     </style>
 </head>
 <body>
-
-    <div class="ad-container ad-728x90">
-        <script>
-            atOptions = {
-                'key' : '0090fc855bce8fb389926eabcc55ed1f',
-                'format' : 'iframe',
-                'height' : 90,
-                'width' : 728,
-                'params' : {}
-            };
-        </script>
-        <script src="https://www.highperformanceformat.com/0090fc855bce8fb389926eabcc55ed1f/invoke.js"></script>
-    </div>
+${anunciosTopo}
     <div class="card">
         <h1><span class="channel-name">Canal Panda Ansioso</span></h1>
         <p class="subtitle">Conteúdo exclusivo de Custom ROMs e Otimização.</p>
@@ -153,22 +807,8 @@
         <div class="sugestoes-container" id="sugestoesContainer"></div>
         <button id="btnVerMaisSugs" class="btn-ver-mais" onclick="alternarVisibilidadeSugestoes()">Ver Mais</button>
 
-
-    <div class="ad-container ad-320x50">
-        <script>
-            atOptions = {
-                'key' : '41eb470e322f84ddcbac2a56ee7c4ef5',
-                'format' : 'iframe',
-                'height' : 50,
-                'width' : 320,
-                'params' : {}
-            };
-        </script>
-        <script src="https://www.highperformanceformat.com/41eb470e322f84ddcbac2a56ee7c4ef5/invoke.js"></script>
-    </div>
-
-    <script async="async" data-cfasync="false" src="https://pl29740469.effectivecpmnetwork.com/94f71d23e1cb7f5455caa2e345da6d0b/invoke.js"></script>
-    <div id="container-94f71d23e1cb7f5455caa2e345da6d0b"></div>
+${anuncioEntreVideo}
+${scriptBandeira}
         <div class="arquivos-container" id="listaArquivosContainer"></div>
 
         <div class="footer-anuncios"></div>
@@ -196,104 +836,14 @@
 
         <div class="footer">&copy; 2026 Canal Panda Ansioso - Todos os direitos reservados.</div>
     </div>
-
-    <div class="ad-container ad-300x250">
-        <script>
-            atOptions = {
-                'key' : '649e8619ac522c5b495c01e468041d0e',
-                'format' : 'iframe',
-                'height' : 250,
-                'width' : 300,
-                'params' : {}
-            };
-        </script>
-        <script src="https://www.highperformanceformat.com/649e8619ac522c5b495c01e468041d0e/invoke.js"></script>
-    </div>
-
+${anuncioRodape}
+${scriptPopunder}
+${scriptSocialBar}
     <script>
-        const listaVideos = [
-          "QXJPVtfV8S8",
-          "KGxZK9I79RQ",
-          "jKoM0eKkJCo",
-          "TjYQ1iUuMlA",
-          "MWQ3iiY-qvI",
-          "_E906DAWdpw",
-          "JWRFqQPIydw",
-          "2588HbuLrtA"
-            ];
-        const listaProdutos = [
-          "https://s.shopee.com.br/4qDQZzlLe5",
-          "https://s.shopee.com.br/7VEBkbMT81",
-          "https://s.shopee.com.br/60PNxnGBxT",
-          "https://s.shopee.com.br/902lACp5sm",
-          "https://s.shopee.com.br/3LOOPkKx93",
-          "https://s.shopee.com.br/60P9acpCqm",
-          "https://s.shopee.com.br/40e5CvfcpC",
-          "https://s.shopee.com.br/6VLQBUFJj5",
-          "https://s.shopee.com.br/1gGAQYhaiv",
-          "https://s.shopee.com.br/2qS7oj7XmR",
-          "https://s.shopee.com.br/3LOOPgZUce"
-            ];
-        const arquivosCadastrados = [
-          {
-                    "nome": "Pixel OS 17 + Kernel",
-                    "link": "https://drive.google.com/drive/folders/171BqeGFh7DjVlDN_3YLrG_CpapO7QhMe"
-          },
-          {
-                    "nome": "Twrp + Vb Meta",
-                    "link": "https://drive.google.com/drive/folders/1TFfsw590NKwi-3CDxZ2glZHPl14ad923?usp=drive_link"
-          },
-          {
-                    "nome": "Driver",
-                    "link": "https://drive.google.com/drive/folders/1ICT0jAkGfnuNPIf837P1_ht70DCKk6F8?usp=drive_link"
-          },
-          {
-                    "nome": "Odin",
-                    "link": "https://drive.google.com/drive/folders/19q9J4dy6NL28cfXflYk9qIhqe4ZwP57O?usp=drive_link"
-          }
-            ];
-        const sugestoesCadastradas = [
-          {
-                    "titulo": "Como desbloquear o bootloader do Celular Samsung",
-                    "id": "giJXYqCZShU"
-          },
-          {
-                    "titulo": "Como instalar o Twrp eo Vb meta sem pc - Eros Flash toot",
-                    "id": "JlKrPbHpijU"
-          },
-          {
-                    "titulo": "Como instalar custo rom com Adb Sideload",
-                    "id": "d9p7SAnpakU"
-          },
-          {
-                    "titulo": "Como instalar Stock em qualquer Samsung",
-                    "id": "ZsF7gaMhMvw"
-          },
-          {
-                    "titulo": "Como instalar a Stock rom sem Computador",
-                    "id": "GlNHDZpT5UU"
-          },
-          {
-                    "titulo": "Como instalar a rom un1ca 3.0.6",
-                    "id": "jKoM0eKkJCo"
-          },
-          {
-                    "titulo": "Como instalar a Clean UI 7 no S20fe",
-                    "id": "TjYQ1iUuMlA"
-          },
-          {
-                    "titulo": "Como instalar a Polsar OS One Ui 5.1 no S20fe",
-                    "id": "2588HbuLrtA"
-          },
-          {
-                    "titulo": "Super Wallpaper animado xiaomi na tela Aod Samsung - root",
-                    "id": "_E906DAWdpw"
-          },
-          {
-                    "titulo": "Swifyt Blackup - Restauração de Whatsapp",
-                    "id": "jdjfZh-ZXq8"
-          }
-            ];
+        const listaVideos = ${strArrayVideos};
+        const listaProdutos = ${strArrayProdutos};
+        const arquivosCadastrados = ${strArrayArquivos};
+        const sugestoesCadastradas = ${strArraySugestoes};
 
         let estadosBotoes = arquivosCadastrados.map(() => ({ estado: 0 }));
         let exibirTodasSugestoes = false;
@@ -325,12 +875,12 @@
                 const thumbUrl = "https://img.youtube.com/vi/" + sug.id + "/mqdefault.jpg";
                 const estiloDisplay = idx >= 3 ? 'style="display: none;"' : '';
                 
-                containerSugs.innerHTML += `
-                    <div class="sugestao-item item-sug-alvo" data-index="${idx}" ${estiloDisplay} onclick="mudarVideoPrincipal('${sug.id}')">
-                        <div class="sugestao-thumb" style="background-image: url('${thumbUrl}');"></div>
-                        <div class="sugestao-text">${sug.titulo}</div>
+                containerSugs.innerHTML += \`
+                    <div class="sugestao-item item-sug-alvo" data-index="\${idx}" \${estiloDisplay} onclick="mudarVideoPrincipal('\${sug.id}')">
+                        <div class="sugestao-thumb" style="background-image: url('\${thumbUrl}');"></div>
+                        <div class="sugestao-text">\${sug.titulo}</div>
                     </div>
-                `;
+                \`;
             });
 
             // Se tiver mais de 3 itens, exibe o botão "Ver Mais"
@@ -342,22 +892,22 @@
             container.innerHTML = "";
             
             arquivosCadastrados.forEach((arq, index) => {
-                container.innerHTML += `
-                    <div class="item-download-box" id="box_${index}">
-                        <button class="btn-download" id="btn_${index}" onclick="gerenciarClique(${index})">
-                            <span>📥 ${arq.nome}</span>
+                container.innerHTML += \`
+                    <div class="item-download-box" id="box_\${index}">
+                        <button class="btn-download" id="btn_\${index}" onclick="gerenciarClique(\${index})">
+                            <span>📥 \${arq.nome}</span>
                             <div class="badge-download">
-                                <span id="cadeado_${index}">🔒</span>
+                                <span id="cadeado_\${index}">🔒</span>
                                 <span>DOWNLOAD</span>
                             </div>
                         </button>
                         
-                        <div class="progress-container" id="progress_container_${index}">
-                            <div class="progress-bar" id="progress_bar_${index}"></div>
-                            <div class="progress-text" id="progress_text_${index}">Iniciando...</div>
+                        <div class="progress-container" id="progress_container_\${index}">
+                            <div class="progress-bar" id="progress_bar_\${index}"></div>
+                            <div class="progress-text" id="progress_text_\${index}">Iniciando...</div>
                         </div>
                     </div>
-                `;
+                \`;
             });
         }
 
@@ -414,7 +964,32 @@
         }
 
         window.onload = iniciarPagina;
-    </script>
+    <\/script>
 
+</body>
+</html>`;
+        }
+
+        function copyCode() {
+            const txt = document.getElementById('txtCodigoPronto');
+            txt.select();
+            document.execCommand('copy');
+            alert('Código copiado com sucesso!');
+        }
+
+        function visualizarCodigoEmTempoReal() {
+            const codigo = document.getElementById('txtCodigoPronto').value;
+            if (!codigo) {
+                alert('Nenhum código gerado para visualizar.');
+                return;
+            }
+            const novaAba = window.open();
+            novaAba.document.open();
+            novaAba.document.write(codigo);
+            novaAba.document.close();
+        }
+
+        window.onload = () => { mudarTela('telaLista'); };
+    </script>
 </body>
 </html>
